@@ -14,10 +14,24 @@ export declare class FilterController {
         };
     }>;
     getGenres(): Promise<{
-        id: any;
-        name: any;
-    }[]>;
+        status: boolean;
+        data: {
+            id: any;
+            name: any;
+        }[];
+    }>;
     getByGenre(slug: string, page?: string): Promise<{
+        status: boolean;
+        data: {
+            results: any;
+            pagination: {
+                page: number;
+                total_page: any;
+                has_next: boolean;
+            };
+        };
+    }>;
+    getLatest(page?: string): Promise<{
         status: boolean;
         data: {
             results: any;

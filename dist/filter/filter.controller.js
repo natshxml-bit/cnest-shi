@@ -28,6 +28,9 @@ let FilterController = class FilterController {
     async getByGenre(slug, page) {
         return this.filterService.getByGenre(slug, page);
     }
+    async getLatest(page) {
+        return this.filterService.getFilteredManga({ order: 'latest', page: page || '1' });
+    }
 };
 exports.FilterController = FilterController;
 __decorate([
@@ -51,6 +54,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], FilterController.prototype, "getByGenre", null);
+__decorate([
+    (0, common_1.Get)('latest'),
+    __param(0, (0, common_1.Query)('page')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FilterController.prototype, "getLatest", null);
 exports.FilterController = FilterController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [filter_service_1.FilterService])

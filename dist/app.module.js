@@ -8,19 +8,47 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const core_1 = require("@nestjs/core");
+const config_1 = require("@nestjs/config");
+const throttler_1 = require("@nestjs/throttler");
 const home_module_1 = require("./home/home.module");
 const detail_module_1 = require("./detail/detail.module");
 const chapter_module_1 = require("./chapter/chapter.module");
 const filter_module_1 = require("./filter/filter.module");
 const search_module_1 = require("./search/search.module");
+const api_key_guard_1 = require("./common/api-key.guard");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [home_module_1.HomeModule, detail_module_1.DetailModule, chapter_module_1.ChapterModule, filter_module_1.FilterModule, search_module_1.SearchModule],
+        imports: [
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
+            throttler_1.ThrottlerModule.forRoot([
+                {
+                    ttl: 10000,
+                    limit: 40,
+                },
+            ]),
+            home_module_1.HomeModule,
+            detail_module_1.DetailModule,
+            chapter_module_1.ChapterModule,
+            filter_module_1.FilterModule,
+            search_module_1.SearchModule,
+        ],
         controllers: [],
-        providers: [],
+        providers: [
+            {
+                provide: core_1.APP_GUARD,
+                useClass: api_key_guard_1.ApiKeyGuard,
+            },
+            {
+                provide: core_1.APP_GUARD,
+                useClass: throttler_1.ThrottlerGuard,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

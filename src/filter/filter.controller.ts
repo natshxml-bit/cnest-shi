@@ -22,4 +22,10 @@ export class FilterController {
   async getByGenre(@Param('slug') slug: string, @Query('page') page?: string) {
     return this.filterService.getByGenre(slug, page);
   }
+
+  // ✅ BARU: GET /latest?page=1 -> sama kayak /filter tapi force sort=latest, tanpa filter lain
+  @Get('latest')
+  async getLatest(@Query('page') page?: string) {
+    return this.filterService.getFilteredManga({ order: 'latest', page: page || '1' });
+  }
 }

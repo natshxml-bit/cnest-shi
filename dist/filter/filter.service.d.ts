@@ -22,7 +22,10 @@ export declare class FilterService {
         };
     }>;
     getGenres(): Promise<{
-        id: any;
-        name: any;
-    }[]>;
+        status: boolean;
+        data: {
+            id: any;
+            name: any;
+        }[];
+    }>;
 }

@@ -115,10 +115,11 @@ let FilterService = class FilterService {
                 upstream?.data?.genres ??
                 upstream?.data ??
                 [];
-            return (Array.isArray(rawGenres) ? rawGenres : []).map((g) => ({
+            const genres = (Array.isArray(rawGenres) ? rawGenres : []).map((g) => ({
                 id: g.id ?? g.genre_id ?? g.slug ?? g.value,
                 name: g.name ?? g.title ?? g.label,
             }));
+            return { status: true, data: genres };
         }
         catch (error) {
             throw new common_1.HttpException(error.message || 'Gagal fetch data genre', error.status || common_1.HttpStatus.INTERNAL_SERVER_ERROR);

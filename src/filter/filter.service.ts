@@ -136,10 +136,12 @@ export class FilterService {
         upstream?.data ??
         []; // ✅ FIX: typo ??A → ??
 
-      return (Array.isArray(rawGenres) ? rawGenres : []).map((g: any) => ({
+      const genres = (Array.isArray(rawGenres) ? rawGenres : []).map((g: any) => ({
         id: g.id ?? g.genre_id ?? g.slug ?? g.value,
         name: g.name ?? g.title ?? g.label,
       }));
+
+      return { status: true, data: genres };
     } catch (error: any) {
       throw new HttpException(
         error.message || 'Gagal fetch data genre',
