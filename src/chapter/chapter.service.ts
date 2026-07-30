@@ -17,15 +17,14 @@ export class ChapterService {
         return `${baseUrl}${imagePath}${filename}`;
       });
 
-      // 1. Masukin array 'images' yang udah jadi full URL
-      response.data.images = images;
-
-      // 2. HAPUS object 'chapter' bawaan upstream biar JSON-nya bersih
-      delete response.data.chapter; 
-
-      // (Opsional) Kalau lu mau hapus base_url dan base_url_low juga, uncomment ini:
-      // delete response.data.base_url;
-      // delete response.data.base_url_low;
+      // FIX: dulu di sini langsung `delete response.data.chapter` abis cuma
+      // narik path+data buat gambar — padahal metadata penting (title,
+      // chapter_number, prev/next chapter id, dll, apapun nama field aslinya
+      // dari upstream) kemungkinan besar nyimpen di object 'chapter' ini juga.
+      // Sekarang di-spread ke atas dulu biar gak ada yang kebuang percuma,
+      // baru object 'chapter' bawaannya dihapus.
+      const { path: _path, data: _data, ...chapterMeta } = chapterData.chapter;
+      response.data = { ...response.data, ...chapterMeta, images };
 
       return response;
     } catch (error) {
