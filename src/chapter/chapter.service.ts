@@ -1,5 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { shngmFetch } from '../common/shngm-client';
+import { fetchAllChapters } from '../detail/detail.service';
 
 @Injectable()
 export class ChapterService {
@@ -25,6 +26,28 @@ export class ChapterService {
       // baru object 'chapter' bawaannya dihapus.
       const { path: _path, data: _data, ...chapterMeta } = chapterData.chapter;
       response.data = { ...response.data, ...chapterMeta, images };
+
+      // FIX: daftar chapter buat drawer "Daftar Chapter" di reader frontend.
+      // Upstream /chapter/detail GAK ngirim daftar chapter sama sekali, jadi
+      // drawer reader selalu kosong ("Chapter tidak ditemukan"). Ambil dari
+      // endpoint chapter list pake manga_id (sama kayak /detail), terus
+      // gabungin. slug = chapter_id biar konsisten sama URL frontend
+      // (useMangaDetail fallback ke chapter_id kalau gak ada slug).
+      const mangaId = chapterData.manga_id || response.data.manga_id;
+      if (mangaId) {
+        try {
+          const rawChapters = await fetchAllChapters(mangaId);
+          response.data.chapters = rawChapters.map((c: any) => ({
+            slug: c.chapter_id,
+            number: String(c.chapter_number ?? '').replace(/^Chapter\s+/i, ''),
+            url: '',
+          }));
+        } catch {
+          // Daftar chapter cuma bonus — gagal nariknya jangan bikin
+          // isi chapter (gambar) ikut rusak.
+          response.data.chapters = [];
+        }
+      }
 
       return response;
     } catch (error) {

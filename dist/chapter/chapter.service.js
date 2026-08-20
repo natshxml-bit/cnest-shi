@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChapterService = void 0;
 const common_1 = require("@nestjs/common");
 const shngm_client_1 = require("../common/shngm-client");
+const detail_service_1 = require("../detail/detail.service");
 let ChapterService = class ChapterService {
     async getChapterDetail(chapterId) {
         try {
@@ -21,8 +22,22 @@ let ChapterService = class ChapterService {
             const images = imageFiles.map((filename) => {
                 return `${baseUrl}${imagePath}${filename}`;
             });
-            response.data.images = images;
-            delete response.data.chapter;
+            const { path: _path, data: _data, ...chapterMeta } = chapterData.chapter;
+            response.data = { ...response.data, ...chapterMeta, images };
+            const mangaId = chapterData.manga_id || response.data.manga_id;
+            if (mangaId) {
+                try {
+                    const rawChapters = await (0, detail_service_1.fetchAllChapters)(mangaId);
+                    response.data.chapters = rawChapters.map((c) => ({
+                        slug: c.chapter_id,
+                        number: String(c.chapter_number ?? '').replace(/^Chapter\s+/i, ''),
+                        url: '',
+                    }));
+                }
+                catch {
+                    response.data.chapters = [];
+                }
+            }
             return response;
         }
         catch (error) {

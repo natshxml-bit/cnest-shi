@@ -10,7 +10,7 @@ import { shngmFetch } from '../common/shngm-client';
  * /chapter/{id}/list, cari field yang nunjukin total halaman/total data,
  * terus ganti nama field di bawah ini biar sesuai.
  */
-async function fetchAllChapters(mangaId: string) {
+export async function fetchAllChapters(mangaId: string) {
   const pageSize = 100;
   const first = await shngmFetch(
     `/chapter/${mangaId}/list?page=1&page_size=${pageSize}&sort_by=chapter_number&sort_order=desc`,

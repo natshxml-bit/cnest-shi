@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DetailService = void 0;
+exports.fetchAllChapters = fetchAllChapters;
 const common_1 = require("@nestjs/common");
 const shngm_client_1 = require("../common/shngm-client");
 async function fetchAllChapters(mangaId) {
